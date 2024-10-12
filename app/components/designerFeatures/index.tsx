@@ -5,6 +5,7 @@ interface DesignerFeaturesProps {
   onEnlarge: () => void;
   onRotateClockwise: () => void;
   onRotateAntiClockwise: () => void;
+  onDefault: () => void;
 }
 
 export const DesignerFeatures: React.FC<DesignerFeaturesProps> = ({
@@ -12,6 +13,7 @@ export const DesignerFeatures: React.FC<DesignerFeaturesProps> = ({
   onEnlarge,
   onRotateClockwise,
   onRotateAntiClockwise,
+  onDefault,
 }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
@@ -19,6 +21,7 @@ export const DesignerFeatures: React.FC<DesignerFeaturesProps> = ({
       <button onClick={onEnlarge} style={buttonStyle}>Enlarge</button>
       <button onClick={onRotateClockwise} style={buttonStyle}>Rotate Clockwise</button>
       <button onClick={onRotateAntiClockwise} style={buttonStyle}>Rotate Anti-Clockwise</button>
+      <button onClick={onDefault} style={buttonStyle}>Default</button>
     </div>
   );
 };
@@ -32,4 +35,3 @@ const buttonStyle: React.CSSProperties = {
   cursor: 'pointer',
   fontSize: '0.9rem',
 };
-

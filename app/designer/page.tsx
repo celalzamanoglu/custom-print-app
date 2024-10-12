@@ -30,7 +30,8 @@ type DesignerAction =
   | { type: 'SHRINK_LOGO' }
   | { type: 'ENLARGE_LOGO' }
   | { type: 'ROTATE_CLOCKWISE' }
-  | { type: 'ROTATE_ANTI_CLOCKWISE' };
+  | { type: 'ROTATE_ANTI_CLOCKWISE' }
+  | { type: 'SET_DEFAULT_LOGO_FEATURES' };
 
 function designerReducer(state: DesignerState, action: DesignerAction): DesignerState {
   switch (action.type) {
@@ -54,6 +55,8 @@ function designerReducer(state: DesignerState, action: DesignerAction): Designer
       return { ...state, logoRotation: (state.logoRotation + 15) % 360 };
     case 'ROTATE_ANTI_CLOCKWISE':
       return { ...state, logoRotation: (state.logoRotation - 15 + 360) % 360 };
+    case 'SET_DEFAULT_LOGO_FEATURES':
+      return { ...state, logoScale: 1, logoRotation: 0 };
     default:
       return state;
   }
@@ -73,6 +76,7 @@ export default function Designer() {
 
   const handleTemplateSelect = (id: number) => {
     dispatch({ type: 'SET_TEMPLATE', payload: id });
+    dispatch({ type: 'SET_DEFAULT_LOGO_FEATURES' });
   };
 
   const handlePaperSizeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -108,6 +112,8 @@ export default function Designer() {
   const handleRotateClockwise = () => dispatch({ type: 'ROTATE_CLOCKWISE' });
   const handleRotateAntiClockwise = () => dispatch({ type: 'ROTATE_ANTI_CLOCKWISE' });
 
+  const handleDefault = () => dispatch({ type: 'SET_DEFAULT_LOGO_FEATURES' });
+
   console.log(state);
 
   return (
@@ -140,6 +146,7 @@ export default function Designer() {
           onEnlarge={handleEnlarge}
           onRotateClockwise={handleRotateClockwise}
           onRotateAntiClockwise={handleRotateAntiClockwise}
+          onDefault={handleDefault}
         />
       </div>
       {/* Right Column - Paper Options */}
