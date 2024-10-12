@@ -3,13 +3,12 @@
 import { useEffect, useReducer } from 'react';
 import Image from 'next/image';
 
-import { DesignerPreview, TemplateOption } from '@/components';
+import { DesignerPreview, TemplateOption, Option } from '@/components';
 
 import { PAPER_SIZES, PAPER_COLOR, PRINT_COLOR, QUANTITY, TEMPLATES, colors, images } from '@/constants';
 
 const DEFAULT_LOGO = images.defaultLogo;
 
-// Define the state interface
 interface DesignerState {
   selectedTemplate: number;
   selectedPaperSize: { x: number; y: number };
@@ -19,7 +18,6 @@ interface DesignerState {
   selectedLogo: string | null;
 }
 
-// Define action types
 type DesignerAction =
   | { type: 'SET_TEMPLATE'; payload: number }
   | { type: 'SET_PAPER_SIZE'; payload: { x: number; y: number } }
@@ -28,7 +26,6 @@ type DesignerAction =
   | { type: 'SET_QUANTITY'; payload: string }
   | { type: 'SET_LOGO'; payload: string | null };
 
-// Define the reducer function
 function designerReducer(state: DesignerState, action: DesignerAction): DesignerState {
   switch (action.type) {
     case 'SET_TEMPLATE':
@@ -104,7 +101,6 @@ export default function Designer() {
           />
         ))}
       </div>
-
       {/* Center Column - Designer */}
       <div style={{ width: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem', borderRight: '1px solid #ccc' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Designer</h2>
@@ -115,11 +111,9 @@ export default function Designer() {
           selectedLogo={state.selectedLogo}
         />
       </div>
-
       {/* Right Column - Paper Options */}
       <div style={{ width: '25%', padding: '1rem' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Designer Options</h2>
-        
         {/* Logo Upload Section */}
         <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', flex: 0.5, flexDirection: 'column', gap: '0.5rem' }}>
@@ -142,39 +136,25 @@ export default function Designer() {
             />
           </div>
         </div>
-
-        {/* Right Column - Paper Size */}
-        <div style={{ marginBottom: '1rem' }}>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Paper Size</h3>
-          <select 
-            style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '0.25rem', marginTop: '0.5rem' }}
-            value={`${state.selectedPaperSize.x}x${state.selectedPaperSize.y}`}
-            onChange={handlePaperSizeSelect}
-          >
-            {PAPER_SIZES.map((size) => (
-              <option key={`${size.x}x${size.y}`} value={`${size.x}x${size.y}`}>{`${size.x}cm x ${size.y}cm`}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Right Column - Print Color */}
-        <div style={{ marginBottom: '1rem' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Print Color</h3>
-          
-          <select 
-            style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '0.25rem', marginTop: '0.5rem' }}
-            value={state.selectedPrintColor}
-            onChange={handlePrintColorSelect}
-          >
-            {PRINT_COLOR.map((color) => (
-              <option key={color} value={color}>{color}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Right Column - Paper Color */}
+        <Option
+          title="Paper Size"
+          options={PAPER_SIZES}
+          value={state.selectedPaperSize}
+          onChange={handlePaperSizeSelect}
+          getOptionLabel={(size) => `${size.x}cm x ${size.y}cm`}
+          getOptionValue={(size) => `${size.x}x${size.y}`}
+        />
+        <Option
+          title="Print Color"
+          options={PRINT_COLOR}
+          value={state.selectedPrintColor}
+          onChange={handlePrintColorSelect}
+          getOptionLabel={(color) => color.toString()}
+          getOptionValue={(color) => color.toString()}
+        />
+        {/* Paper Color Section */}
         <div style={{ marginBottom: '1rem' }}>  
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Paper Color</h3>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Paper Color</h3>
           <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem', marginTop: '0.5rem' }}>
             {Object.values(PAPER_COLOR).map((color) => (
               <div 
@@ -194,20 +174,14 @@ export default function Designer() {
             ))}
           </div>
         </div>
-
-        {/* Right Column - Quantity */}
-        <div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Quantity</h3>
-          <select 
-            style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '0.25rem', marginTop: '0.5rem' }}
-            value={state.selectedQuantity}
-            onChange={handleQuantitySelect}
-          >
-            {QUANTITY.map((quantity) => (
-              <option key={quantity} value={quantity}>{quantity}</option>
-            ))}
-          </select>
-        </div>
+        <Option
+          title="Quantity"
+          options={QUANTITY}
+          value={state.selectedQuantity}
+          onChange={handleQuantitySelect}
+          getOptionLabel={(quantity) => quantity}
+          getOptionValue={(quantity) => quantity}
+        />
       </div>
     </div>
   );
