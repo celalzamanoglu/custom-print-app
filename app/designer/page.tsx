@@ -3,7 +3,7 @@
 import { useEffect, useReducer } from 'react';
 import Image from 'next/image';
 
-import { DesignerPreview, TemplateOption, Option } from '@/components';
+import { DesignerPreview, TemplateOption, Option, Total } from '@/components';
 
 import { PAPER_SIZES, PAPER_COLOR, PRINT_COLOR, QUANTITY, TEMPLATES, colors, images } from '@/constants';
 
@@ -14,7 +14,7 @@ interface DesignerState {
   selectedPaperSize: { x: number; y: number };
   selectedPrintColor: number;
   selectedPaperColor: string;
-  selectedQuantity: string;
+  selectedQuantity: number;
   selectedLogo: string | null;
 }
 
@@ -23,7 +23,7 @@ type DesignerAction =
   | { type: 'SET_PAPER_SIZE'; payload: { x: number; y: number } }
   | { type: 'SET_PRINT_COLOR'; payload: number }
   | { type: 'SET_PAPER_COLOR'; payload: string }
-  | { type: 'SET_QUANTITY'; payload: string }
+  | { type: 'SET_QUANTITY'; payload: number }
   | { type: 'SET_LOGO'; payload: string | null };
 
 function designerReducer(state: DesignerState, action: DesignerAction): DesignerState {
@@ -37,7 +37,7 @@ function designerReducer(state: DesignerState, action: DesignerAction): Designer
     case 'SET_PAPER_COLOR':
       return { ...state, selectedPaperColor: action.payload };
     case 'SET_QUANTITY':
-      return { ...state, selectedQuantity: action.payload };
+      return { ...state, selectedQuantity: Number(action.payload) };
     case 'SET_LOGO':
       return { ...state, selectedLogo: action.payload };
     default:
@@ -73,7 +73,7 @@ export default function Designer() {
   };
 
   const handleQuantitySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_QUANTITY', payload: event.target.value });
+    dispatch({ type: 'SET_QUANTITY', payload: Number(event.target.value) });
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +86,8 @@ export default function Designer() {
       reader.readAsDataURL(file);
     }
   };
+
+  console.log(state);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', height: '100vh', width: '100vw' }}>
@@ -179,9 +181,10 @@ export default function Designer() {
           options={QUANTITY}
           value={state.selectedQuantity}
           onChange={handleQuantitySelect}
-          getOptionLabel={(quantity) => quantity}
-          getOptionValue={(quantity) => quantity}
+          getOptionLabel={(quantity) => `${quantity.toLocaleString()}`}
+          getOptionValue={(quantity) => quantity.toString()}
         />
+        <Total paperSize={state.selectedPaperSize} printColor={state.selectedPrintColor} quantity={state.selectedQuantity} />
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ export const PAPER_COLOR = [
 
 
 export const QUANTITY = [
-    "2.000", "5.000", "10.000", "20.000", "30.000", "100.000"
+    2000, 5000, 10000, 20000, 30000, 100000
 ]
 
 export const TEMPLATES = [
