@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
+
+import { images } from '@/constants';
 
 interface TemplateOptionProps {
   id: number;
@@ -8,20 +10,10 @@ interface TemplateOptionProps {
   isSelected: boolean;
 }
 
-export default function TemplateOption({ id, name, description, onSelect, isSelected }: TemplateOptionProps) {
+export const TemplateOption = ({ id, name, description, onSelect, isSelected }: TemplateOptionProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        drawTemplate(ctx, id);
-      }
-    }
-  }, [id]);
-
-  const drawTemplate = (ctx: CanvasRenderingContext2D, templateId: number) => {
+  const drawTemplate = useCallback((ctx: CanvasRenderingContext2D, templateId: number) => {
     ctx.clearRect(0, 0, 200, 100);
     const img = new Image();
     img.onload = () => {
@@ -38,13 +30,23 @@ export default function TemplateOption({ id, name, description, onSelect, isSele
         case 4: // Dense Staggered
           drawDenseStaggered(ctx, img);
           break;
-        case 5: // Diagonal Rows
-          drawDiagonalRows(ctx, img);
+        case 5: // Centered
+          drawCentered(ctx, img);
           break;
       }
     };
-    img.src = '/your-logo-here.webp';
-  };
+    img.src = images.defaultLogo;
+  }, []); // Add any dependencies if needed
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        drawTemplate(ctx, id);
+      }
+    }
+  }, [id, drawTemplate]);
 
   // Implement drawing functions for each template
   const drawSimpleGrid = (ctx: CanvasRenderingContext2D, img: HTMLImageElement) => {
@@ -79,13 +81,9 @@ export default function TemplateOption({ id, name, description, onSelect, isSele
     }
   };
 
-  const drawDiagonalRows = (ctx: CanvasRenderingContext2D, img: HTMLImageElement) => {
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 5; j++) {
-        ctx.drawImage(img, i * 40 - j * 20, j * 40, 30, 30);
-      }
-    }
-  };
+  const drawCentered = (ctx: CanvasRenderingContext2D, img: HTMLImageElement) => {
+    ctx.drawImage(img, 50, 25, 100, 50);
+  }
 
   return (
     <div 

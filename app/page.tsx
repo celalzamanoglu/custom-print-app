@@ -9,7 +9,7 @@ const steps = [
 export default function Home() {
   return (
     <main style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
-      <h1>Custom Print</h1>
+      <h1>APP NAME</h1>
       <h2>Design Your Own Custom Printed Paper that&apos;s Greaseproof In 3 Easy Steps!</h2>
       <p style={{ maxWidth: '800px', margin: '0 auto' }}>
         Create your own branded greaseproof paper in our design tool, or upload your own graphic design art. We will do the rest and deliver your order upon completion! Available in white or Kraft paper using 1 color, 2 color, and 4 color printing process.
