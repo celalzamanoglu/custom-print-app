@@ -7,13 +7,17 @@ interface DesignerPreviewProps {
   selectedPaperSize: {x: number, y: number};
   selectedPaperColor: string;
   selectedLogo: string | null;
+  logoScale: number;
+  logoRotation: number;
 }
 
 export const DesignerPreview = ({ 
   selectedTemplate, 
   selectedPaperSize, 
   selectedPaperColor, 
-  selectedLogo 
+  selectedLogo,
+  logoScale,
+  logoRotation
 }: DesignerPreviewProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -31,11 +35,20 @@ export const DesignerPreview = ({
     const offsetX = (canvasWidth - (cols - 1) * spacing) / 2;
     const offsetY = (canvasHeight - (rows - 1) * spacing) / 2;
 
+    const drawLogo = (x: number, y: number, size: number) => {
+      ctx.save();
+      ctx.translate(x + size / 2, y + size / 2);
+      ctx.rotate(logoRotation * Math.PI / 180);
+      ctx.scale(logoScale, logoScale);
+      ctx.drawImage(img, -size / 2, -size / 2, size, size);
+      ctx.restore();
+    };
+
     if (centered) {
       const centerX = canvasWidth / 2;
       const centerY = canvasHeight / 2;
       const logoSize = 200 * scaleFactor;
-      ctx.drawImage(img, centerX - logoSize / 2, centerY - logoSize / 2, logoSize, logoSize);
+      drawLogo(centerX - logoSize / 2, centerY - logoSize / 2, logoSize);
       return;
     }
 
@@ -43,10 +56,10 @@ export const DesignerPreview = ({
       for (let x = 0; x < cols; x++) {
         const drawX = offsetX + x * spacing + (staggered && y % 2 ? spacing / 2 : 0) - imgSize / 2;
         const drawY = offsetY + y * spacing - imgSize / 2;
-        ctx.drawImage(img, drawX, drawY, imgSize, imgSize);
+        drawLogo(drawX, drawY, imgSize);
       }
     }
-  }, [scaleFactor, canvasWidth, canvasHeight]);
+  }, [scaleFactor, canvasWidth, canvasHeight, logoScale, logoRotation]);
 
   const drawTemplate = useCallback((ctx: CanvasRenderingContext2D, templateId: number) => {
     // Set the background color

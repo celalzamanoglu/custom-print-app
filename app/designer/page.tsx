@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import Image from 'next/image';
 
-import { DesignerPreview, TemplateOption, Option, Total } from '@/components';
+import { DesignerPreview, TemplateOption, Option, Total, DesignerFeatures } from '@/components';
 
 import { PAPER_SIZES, PAPER_COLOR, PRINT_COLOR, QUANTITY, TEMPLATES, colors, images } from '@/constants';
 
@@ -16,6 +16,8 @@ interface DesignerState {
   selectedPaperColor: string;
   selectedQuantity: number;
   selectedLogo: string | null;
+  logoScale: number;
+  logoRotation: number;
 }
 
 type DesignerAction =
@@ -24,7 +26,11 @@ type DesignerAction =
   | { type: 'SET_PRINT_COLOR'; payload: number }
   | { type: 'SET_PAPER_COLOR'; payload: string }
   | { type: 'SET_QUANTITY'; payload: number }
-  | { type: 'SET_LOGO'; payload: string | null };
+  | { type: 'SET_LOGO'; payload: string | null }
+  | { type: 'SHRINK_LOGO' }
+  | { type: 'ENLARGE_LOGO' }
+  | { type: 'ROTATE_CLOCKWISE' }
+  | { type: 'ROTATE_ANTI_CLOCKWISE' };
 
 function designerReducer(state: DesignerState, action: DesignerAction): DesignerState {
   switch (action.type) {
@@ -40,6 +46,14 @@ function designerReducer(state: DesignerState, action: DesignerAction): Designer
       return { ...state, selectedQuantity: Number(action.payload) };
     case 'SET_LOGO':
       return { ...state, selectedLogo: action.payload };
+    case 'SHRINK_LOGO':
+      return { ...state, logoScale: Math.max(0.5, state.logoScale - 0.1) };
+    case 'ENLARGE_LOGO':
+      return { ...state, logoScale: Math.min(1.5, state.logoScale + 0.1) };
+    case 'ROTATE_CLOCKWISE':
+      return { ...state, logoRotation: (state.logoRotation + 15) % 360 };
+    case 'ROTATE_ANTI_CLOCKWISE':
+      return { ...state, logoRotation: (state.logoRotation - 15 + 360) % 360 };
     default:
       return state;
   }
@@ -53,6 +67,8 @@ export default function Designer() {
     selectedPaperColor: Object.values(colors)[0],
     selectedQuantity: QUANTITY[0],
     selectedLogo: null,
+    logoScale: 1,
+    logoRotation: 0,
   });
 
   const handleTemplateSelect = (id: number) => {
@@ -87,6 +103,11 @@ export default function Designer() {
     }
   };
 
+  const handleShrink = () => dispatch({ type: 'SHRINK_LOGO' });
+  const handleEnlarge = () => dispatch({ type: 'ENLARGE_LOGO' });
+  const handleRotateClockwise = () => dispatch({ type: 'ROTATE_CLOCKWISE' });
+  const handleRotateAntiClockwise = () => dispatch({ type: 'ROTATE_ANTI_CLOCKWISE' });
+
   console.log(state);
 
   return (
@@ -111,6 +132,14 @@ export default function Designer() {
           selectedPaperSize={state.selectedPaperSize} 
           selectedPaperColor={state.selectedPaperColor} 
           selectedLogo={state.selectedLogo}
+          logoScale={state.logoScale}
+          logoRotation={state.logoRotation}
+        />
+        <DesignerFeatures
+          onShrink={handleShrink}
+          onEnlarge={handleEnlarge}
+          onRotateClockwise={handleRotateClockwise}
+          onRotateAntiClockwise={handleRotateAntiClockwise}
         />
       </div>
       {/* Right Column - Paper Options */}
