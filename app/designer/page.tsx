@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import Image from 'next/image';
 
 import { DesignerPreview, TemplateOption } from '@/components';
@@ -9,37 +9,74 @@ import { PAPER_SIZES, PAPER_COLOR, PRINT_COLOR, QUANTITY, TEMPLATES, colors, ima
 
 const DEFAULT_LOGO = images.defaultLogo;
 
-export default function Designer() {
-  const [selectedTemplate, setSelectedTemplate] = useState(1);
-  const [selectedPaperSize, setSelectedPaperSize] = useState(PAPER_SIZES[0]);
-  const [selectedPrintColor, setSelectedPrintColor] = useState(PRINT_COLOR[0]);
-  const [selectedPaperColor, setSelectedPaperColor] = useState(Object.values(colors)[0]);
-  const [selectedQuantity, setSelectedQuantity] = useState(QUANTITY[0]);
-  const [selectedLogo, setSelectedLogo] = useState<string | null>(null);
+// Define the state interface
+interface DesignerState {
+  selectedTemplate: number;
+  selectedPaperSize: { x: number; y: number };
+  selectedPrintColor: number;
+  selectedPaperColor: string;
+  selectedQuantity: string;
+  selectedLogo: string | null;
+}
 
-  useEffect(() => {
-    console.log(selectedTemplate, selectedPaperSize, selectedPrintColor,selectedPaperColor, selectedQuantity, selectedLogo)
-  }, [selectedTemplate, selectedPaperSize, selectedPrintColor, selectedPaperColor, selectedQuantity, selectedLogo])
+// Define action types
+type DesignerAction =
+  | { type: 'SET_TEMPLATE'; payload: number }
+  | { type: 'SET_PAPER_SIZE'; payload: { x: number; y: number } }
+  | { type: 'SET_PRINT_COLOR'; payload: number }
+  | { type: 'SET_PAPER_COLOR'; payload: string }
+  | { type: 'SET_QUANTITY'; payload: string }
+  | { type: 'SET_LOGO'; payload: string | null };
+
+// Define the reducer function
+function designerReducer(state: DesignerState, action: DesignerAction): DesignerState {
+  switch (action.type) {
+    case 'SET_TEMPLATE':
+      return { ...state, selectedTemplate: action.payload };
+    case 'SET_PAPER_SIZE':
+      return { ...state, selectedPaperSize: action.payload };
+    case 'SET_PRINT_COLOR':
+      return { ...state, selectedPrintColor: action.payload };
+    case 'SET_PAPER_COLOR':
+      return { ...state, selectedPaperColor: action.payload };
+    case 'SET_QUANTITY':
+      return { ...state, selectedQuantity: action.payload };
+    case 'SET_LOGO':
+      return { ...state, selectedLogo: action.payload };
+    default:
+      return state;
+  }
+}
+
+export default function Designer() {
+  const [state, dispatch] = useReducer(designerReducer, {
+    selectedTemplate: 1,
+    selectedPaperSize: PAPER_SIZES[0],
+    selectedPrintColor: PRINT_COLOR[0],
+    selectedPaperColor: Object.values(colors)[0],
+    selectedQuantity: QUANTITY[0],
+    selectedLogo: null,
+  });
 
   const handleTemplateSelect = (id: number) => {
-    setSelectedTemplate(id);
+    dispatch({ type: 'SET_TEMPLATE', payload: id });
   };
 
   const handlePaperSizeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const [x, y] = event.target.value.split('x').map(Number);
-    setSelectedPaperSize({ x, y });
+    dispatch({ type: 'SET_PAPER_SIZE', payload: { x, y } });
   };
 
   const handlePrintColorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedPrintColor(Number(event.target.value));
+    dispatch({ type: 'SET_PRINT_COLOR', payload: Number(event.target.value) });
   };
 
-  const handlePaperColorSelect = (color:string) => {
-    setSelectedPaperColor(color);
+  const handlePaperColorSelect = (color: string) => {
+    dispatch({ type: 'SET_PAPER_COLOR', payload: color });
   };
 
   const handleQuantitySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedQuantity(event.target.value);
+    dispatch({ type: 'SET_QUANTITY', payload: event.target.value });
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +84,7 @@ export default function Designer() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setSelectedLogo(e.target?.result as string);
+        dispatch({ type: 'SET_LOGO', payload: e.target?.result as string });
       };
       reader.readAsDataURL(file);
     }
@@ -63,7 +100,7 @@ export default function Designer() {
             key={template.id}
             {...template}
             onSelect={handleTemplateSelect}
-            isSelected={selectedTemplate === template.id}
+            isSelected={state.selectedTemplate === template.id}
           />
         ))}
       </div>
@@ -72,10 +109,10 @@ export default function Designer() {
       <div style={{ width: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem', borderRight: '1px solid #ccc' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Designer</h2>
         <DesignerPreview 
-          selectedTemplate={selectedTemplate} 
-          selectedPaperSize={selectedPaperSize} 
-          selectedPaperColor={selectedPaperColor} 
-          selectedLogo={selectedLogo}
+          selectedTemplate={state.selectedTemplate} 
+          selectedPaperSize={state.selectedPaperSize} 
+          selectedPaperColor={state.selectedPaperColor} 
+          selectedLogo={state.selectedLogo}
         />
       </div>
 
@@ -87,7 +124,7 @@ export default function Designer() {
         <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', flex: 0.5, flexDirection: 'column', gap: '0.5rem' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Your Logo</h3>
-            {!selectedLogo ? <p>Please upload a logo to use on your cards.</p> : <p>You can upload a different logo if you like.</p>}
+            {!state.selectedLogo ? <p>Please upload a logo to use on your cards.</p> : <p>You can upload a different logo if you like.</p>}
             <input 
               type="file" 
               accept="image/*" 
@@ -97,7 +134,7 @@ export default function Designer() {
           </div>
           <div style={{ display: 'flex', flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
             <Image 
-              src={selectedLogo || DEFAULT_LOGO} 
+              src={state.selectedLogo || DEFAULT_LOGO} 
               alt="Logo" 
               width={100} 
               height={100} 
@@ -111,7 +148,7 @@ export default function Designer() {
           <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Paper Size</h3>
           <select 
             style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '0.25rem', marginTop: '0.5rem' }}
-            value={`${selectedPaperSize.x}x${selectedPaperSize.y}`}
+            value={`${state.selectedPaperSize.x}x${state.selectedPaperSize.y}`}
             onChange={handlePaperSizeSelect}
           >
             {PAPER_SIZES.map((size) => (
@@ -126,7 +163,7 @@ export default function Designer() {
           
           <select 
             style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '0.25rem', marginTop: '0.5rem' }}
-            value={selectedPrintColor}
+            value={state.selectedPrintColor}
             onChange={handlePrintColorSelect}
           >
             {PRINT_COLOR.map((color) => (
@@ -146,9 +183,9 @@ export default function Designer() {
                   width: '3rem', 
                   height: '3rem', 
                   backgroundColor: color, 
-                  borderWidth: color === selectedPaperColor ? '1px' : '0px', 
+                  borderWidth: color === state.selectedPaperColor ? '1px' : '0px', 
                   borderStyle: 'solid', 
-                  borderColor: color === selectedPaperColor ? 'gray' : '#ccc', 
+                  borderColor: color === state.selectedPaperColor ? 'gray' : '#ccc', 
                   boxShadow: '0px 0px 5px 0px rgba(0, 0, 0, 0.1)',
                   cursor: 'pointer'
                 }} 
@@ -163,7 +200,7 @@ export default function Designer() {
           <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Quantity</h3>
           <select 
             style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '0.25rem', marginTop: '0.5rem' }}
-            value={selectedQuantity}
+            value={state.selectedQuantity}
             onChange={handleQuantitySelect}
           >
             {QUANTITY.map((quantity) => (
