@@ -6,7 +6,7 @@ import Link from 'next/link';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Custom Print Designer',
+  title: 'App Name',
   description: 'Design your own custom printed paper',
 }
 
@@ -24,7 +24,7 @@ export default function RootLayout({
           padding: '1rem',
         }}>
           <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <h1 style={{ cursor: 'pointer' }}>Custom Print</h1>
+            <h1 style={{ cursor: 'pointer' }}>App Name</h1>
           </Link>
         </header>
         {children}
