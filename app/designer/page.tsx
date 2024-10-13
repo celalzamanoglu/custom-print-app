@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useReducer } from 'react';
 import Image from 'next/image';
@@ -7,7 +7,15 @@ import { FaRedo, FaUndo, FaArrowsAlt, FaSearchPlus, FaSearchMinus } from 'react-
 
 import { DesignerPreview, TemplateOption, Option, Total } from '@/components';
 
-import { PAPER_SIZES, PAPER_COLOR, PRINT_COLOR, QUANTITY, TEMPLATES, colors, images } from '@/constants';
+import {
+  PAPER_SIZES,
+  PAPER_COLOR,
+  PRINT_COLOR,
+  QUANTITY,
+  TEMPLATES,
+  colors,
+  images,
+} from '@/constants';
 
 const DEFAULT_LOGO = images.defaultLogo;
 
@@ -15,7 +23,7 @@ interface DesignerState {
   selectedTemplate: number;
   selectedPaperSize: { x: number; y: number };
   selectedPrintColor: number;
-  selectedPaperColor: string;
+  selectedPaperColor: { name: string; value: string };
   selectedQuantity: number;
   selectedLogo: string | null;
   logoScale: number;
@@ -26,7 +34,7 @@ type DesignerAction =
   | { type: 'SET_TEMPLATE'; payload: number }
   | { type: 'SET_PAPER_SIZE'; payload: { x: number; y: number } }
   | { type: 'SET_PRINT_COLOR'; payload: number }
-  | { type: 'SET_PAPER_COLOR'; payload: string }
+  | { type: 'SET_PAPER_COLOR'; payload: { name: string; value: string } }
   | { type: 'SET_QUANTITY'; payload: number }
   | { type: 'SET_LOGO'; payload: string | null }
   | { type: 'SHRINK_LOGO' }
@@ -69,7 +77,7 @@ export default function Designer() {
     selectedTemplate: 1,
     selectedPaperSize: PAPER_SIZES[0],
     selectedPrintColor: PRINT_COLOR[0],
-    selectedPaperColor: Object.values(colors)[0],
+    selectedPaperColor: PAPER_COLOR[0],
     selectedQuantity: QUANTITY[0],
     selectedLogo: null,
     logoScale: 1,
@@ -90,8 +98,11 @@ export default function Designer() {
     dispatch({ type: 'SET_PRINT_COLOR', payload: Number(event.target.value) });
   };
 
-  const handlePaperColorSelect = (color: string) => {
-    dispatch({ type: 'SET_PAPER_COLOR', payload: color });
+  const handlePaperColorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedColor = PAPER_COLOR.find((color) => color.value === event.target.value);
+    if (selectedColor) {
+      dispatch({ type: 'SET_PAPER_COLOR', payload: selectedColor });
+    }
   };
 
   const handleQuantitySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -139,10 +150,10 @@ export default function Designer() {
       <div className="w-full lg:w-1/2 mb-4 lg:mb-0 lg:px-4 flex flex-col items-center">
         <h2 className="text-2xl font-bold mb-4 text-center">Designer</h2>
         <div className="w-full flex justify-center">
-          <DesignerPreview 
-            selectedTemplate={state.selectedTemplate} 
-            selectedPaperSize={state.selectedPaperSize} 
-            selectedPaperColor={state.selectedPaperColor} 
+          <DesignerPreview
+            selectedTemplate={state.selectedTemplate}
+            selectedPaperSize={state.selectedPaperSize}
+            selectedPaperColor={state.selectedPaperColor.value}
             selectedLogo={state.selectedLogo}
             logoScale={state.logoScale}
             logoRotation={state.logoRotation}
@@ -165,22 +176,15 @@ export default function Designer() {
           <h3 className="text-lg font-semibold mb-2">Your Logo</h3>
           <div className="flex flex-col items-center">
             <div className="w-full max-w-[150px] h-[150px] relative mb-4">
-              <Image 
-                src={state.selectedLogo || DEFAULT_LOGO} 
-                alt="Logo" 
+              <Image
+                src={state.selectedLogo || DEFAULT_LOGO}
+                alt="Logo"
                 layout="fill"
                 objectFit="contain"
               />
             </div>
-            {!state.selectedLogo && (
-              <p className="text-center mb-2">Please upload a logo.</p>
-            )}
-            <input 
-              type="file" 
-              accept="image/*" 
-              onChange={handleLogoUpload} 
-              className="w-full"
-            />
+            {!state.selectedLogo && <p className="text-center mb-2">Please upload a logo.</p>}
+            <input type="file" accept="image/*" onChange={handleLogoUpload} className="w-full" />
           </div>
         </div>
         <Option
@@ -199,20 +203,21 @@ export default function Designer() {
           getOptionLabel={(color) => color.toString()}
           getOptionValue={(color) => color.toString()}
         />
-        {/* Paper Color Section */}
-        <div className="mb-4">  
-          <h3 className="text-lg font-semibold mb-2">Paper Color</h3>
-          <div className="flex flex-wrap gap-2">
-            {Object.values(PAPER_COLOR).map((color) => (
-              <div 
-                key={color} 
-                className={`w-10 h-10 rounded-full cursor-pointer ${color === state.selectedPaperColor ? 'ring-2 ring-black' : ''}`}
-                style={{ backgroundColor: color }}
-                onClick={() => handlePaperColorSelect(color)}
-              ></div>
-            ))}
-          </div>
-        </div>
+
+        <Option
+          title="Paper Color"
+          options={PAPER_COLOR}
+          value={state.selectedPaperColor}
+          onChange={handlePaperColorSelect}
+          renderStartContent={(color) => (
+            <div
+              className={`w-6 h-6 rounded-full mr-2 ${color.value === colors.white ? 'ring-[0.1px] ring-gray-300' : ''} shadow-md`}
+              style={{ backgroundColor: color.value }}
+            />
+          )}
+          getOptionLabel={(color) => color.name}
+          getOptionValue={(color) => color.value}
+        />
         <Option
           title="Quantity"
           options={QUANTITY}
@@ -221,14 +226,26 @@ export default function Designer() {
           getOptionLabel={(quantity) => `${quantity.toLocaleString()}`}
           getOptionValue={(quantity) => quantity.toString()}
         />
-        <Total paperSize={state.selectedPaperSize} printColor={state.selectedPrintColor} quantity={state.selectedQuantity} />
+        <Total
+          paperSize={state.selectedPaperSize}
+          printColor={state.selectedPrintColor}
+          quantity={state.selectedQuantity}
+        />
       </div>
     </div>
   );
 }
 
 // Helper component for designer buttons
-function DesignerButton({ icon: Icon, label, onClick }: { icon: React.ElementType, label: string, onClick: () => void }) {
+function DesignerButton({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: React.ElementType;
+  label: string;
+  onClick: () => void;
+}) {
   return (
     <div className="flex flex-col items-center">
       <Button

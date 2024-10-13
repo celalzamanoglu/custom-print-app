@@ -1,15 +1,11 @@
-'use client'
+'use client';
 
-import { NextUIProvider } from '@nextui-org/react'
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link } from "@nextui-org/react";
+import { NextUIProvider } from '@nextui-org/react';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
-import './globals.css'
+import './globals.css';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
@@ -23,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <NextUIProvider>
-          <Navbar className="bg-white">
+          <Navbar className="bg-white" shouldHideOnScroll>
             <NavbarBrand>
               <Link href="/" color="foreground" className="font-bold text-2xl">
                 Custom Print Paper
@@ -32,12 +28,12 @@ export default function RootLayout({
             <NavbarContent className="hidden sm:flex gap-8" justify="center">
               {['Home', 'Designer', 'Contact', 'FAQ'].map((item) => (
                 <NavbarItem key={item} isActive={isActive(`/${item.toLowerCase()}`)}>
-                  <Link 
-                    color="foreground" 
+                  <Link
+                    color="foreground"
                     href={`/${item.toLowerCase() === 'home' ? '' : item.toLowerCase()}`}
                     className={`
                       text-xl 
-                      ${isActive(`/${item.toLowerCase()}`) ? "font-bold" : ""}
+                      ${isActive(`/${item.toLowerCase()}`) ? 'font-bold' : ''}
                       relative
                       after:content-['']
                       after:absolute
@@ -62,5 +58,5 @@ export default function RootLayout({
         </NextUIProvider>
       </body>
     </html>
-  )
+  );
 }
