@@ -1,46 +1,59 @@
+'use client'
+
+import { Button, Card } from '@nextui-org/react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { FaUpload, FaPaintBrush, FaClipboardList } from 'react-icons/fa';
 
 const steps = [
-  { id: 1, title: 'UPLOAD YOUR LOGO', description: 'Upload vector image file – .pdf, .png, .jpg, or .eps vector graphic.', icon: '📤' },
-  { id: 2, title: 'DESIGN YOUR PAPER', description: 'Adjust your logo or image in the design tool on the paper and design it.', icon: '🎨' },
-  { id: 3, title: 'SELECT PAPER CHOICES', description: 'Select paper size, print color(s), white or Kraft paper, and sheet quantity.', icon: '📄' },
+  { id: 1, title: 'UPLOAD YOUR LOGO', description: 'Upload vector image file – .pdf, .png, .jpg, or .eps vector graphic.', icon: FaUpload },
+  { id: 2, title: 'DESIGN YOUR PAPER', description: 'Adjust your logo or image in the design tool on the paper and design it.', icon: FaPaintBrush },
+  { id: 3, title: 'SELECT PAPER CHOICES', description: 'Select paper size, print color(s), white or Kraft paper, and sheet quantity.', icon: FaClipboardList },
 ];
 
 export default function Home() {
   return (
-    <main style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
-      <h1>APP NAME</h1>
-      <h2>Design Your Own Custom Printed Paper that&apos;s Greaseproof In 3 Easy Steps!</h2>
-      <p style={{ maxWidth: '800px', margin: '0 auto' }}>
-        Create your own branded greaseproof paper in our design tool, or upload your own graphic design art. We will do the rest and deliver your order upon completion! Available in white or Kraft paper using 1 color, 2 color, and 4 color printing process.
-      </p>
-
-      <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', margin: '2rem 0' }}>
-        {steps.map((step) => (
-          <div key={step.id} style={{ textAlign: 'center', margin: '1rem', maxWidth: '300px' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>{step.icon}</div>
-            <h3>STEP {step.id}</h3>
-            <h4>{step.title}</h4>
-            <p>{step.description}</p>
-          </div>
-        ))}
+    <div>
+      <div className="relative h-[500px]">
+        <Image
+          src="/crumpled-paperboard.jpg"
+          alt="Kraft paper with custom prints"
+          layout="fill"
+          objectFit="cover"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-white">
+          <h1 className="text-4xl font-bold mb-4">Add Your Logo</h1>
+          <p className="text-xl mb-8 max-w-2xl text-center">
+            Create your own personalized greaseproof logo printed paper with our easy-to-use design tool.
+          </p>
+          <Button
+            as={Link}
+            href="/designer"
+            className="bg-[#1c1c1e] text-white hover:bg-[#2c2c2e] transition-colors"
+            size="lg"
+          >
+            DESIGN YOUR PAPER
+          </Button>
+        </div>
       </div>
 
-      <Link href="/designer">
-        <button style={{ 
-          backgroundColor: 'var(--primary-color)', 
-          color: 'white', 
-          padding: '0.5rem 1rem', 
-          borderRadius: '0.25rem',
-          border: 'none',
-          cursor: 'pointer',
-          fontSize: '1.2rem',
-          margin: '0 auto',
-          display: 'block'
-        }}>
-          Start Designing
-        </button>
-      </Link>
-    </main>
+      <div className="container mx-auto py-16">
+        <h2 className="text-3xl font-bold text-center mb-12">Design Your Paper in 3 Easy Steps</h2>
+        <div className="flex flex-wrap justify-center gap-8">
+          {steps.map((step) => (
+            <Card key={step.id} className="p-6 w-80 hover:shadow-lg transition-shadow duration-300">
+              <div className="flex flex-col items-center">
+                <div className="text-5xl mb-4 text-[#1c1c1e]">
+                  <step.icon />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">STEP {step.id}</h3>
+                <h4 className="text-lg font-medium mb-2 text-center">{step.title}</h4>
+                <p className="text-center">{step.description}</p>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

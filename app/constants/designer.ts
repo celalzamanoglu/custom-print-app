@@ -11,7 +11,8 @@ export const PRINT_COLOR = [
 ]
 
 export const PAPER_COLOR = [
-    colors.white, colors.kraft
+    {name: 'White', value: '#FFFFFF'},
+    {name: 'Kraft', value: '#C4AC8A'}
 ]
 
 

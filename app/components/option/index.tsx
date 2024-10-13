@@ -1,4 +1,5 @@
 import React from 'react';
+import { Select, SelectItem } from '@nextui-org/react';
 
 interface OptionProps<T> {
   title: string;
@@ -7,23 +8,37 @@ interface OptionProps<T> {
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   getOptionLabel: (option: T) => string;
   getOptionValue: (option: T) => string;
+  renderStartContent?: (option: T) => React.ReactNode;
 }
 
-export const Option = <T,>({ title, options, value, onChange, getOptionLabel, getOptionValue }: OptionProps<T>) => {
+export function Option<T>({
+  title,
+  options,
+  value,
+  onChange,
+  getOptionLabel,
+  getOptionValue,
+  renderStartContent,
+}: OptionProps<T>) {
   return (
-    <div style={{ marginBottom: '1rem' }}>
-      <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>{title}</h3>
-      <select 
-        style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '0.25rem', marginTop: '0.5rem' }}
-        value={getOptionValue(value)}
+    <div className="mb-4">
+      <Select
+        label={title}
+        placeholder={`Select ${title}`}
+        selectedKeys={[getOptionValue(value)]}
         onChange={onChange}
+        className="max-w-xs"
       >
         {options.map((option) => (
-          <option key={getOptionValue(option)} value={getOptionValue(option)}>
+          <SelectItem
+            key={getOptionValue(option)}
+            value={getOptionValue(option)}
+            startContent={renderStartContent ? renderStartContent(option) : undefined}
+          >
             {getOptionLabel(option)}
-          </option>
+          </SelectItem>
         ))}
-      </select>
+      </Select>
     </div>
   );
 }

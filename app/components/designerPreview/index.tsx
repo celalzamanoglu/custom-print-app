@@ -21,8 +21,9 @@ export const DesignerPreview = ({
 }: DesignerPreviewProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const canvasWidth = 20 * selectedPaperSize.x;
-  const canvasHeight = 20 * selectedPaperSize.y;
+  const canvasWidth = 19 * selectedPaperSize.x;
+  console.log(canvasWidth);
+  const canvasHeight = 19 * selectedPaperSize.y;
 
   const scaleFactor = Math.min(canvasWidth / 400, canvasHeight / 400);
 

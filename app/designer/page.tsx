@@ -1,11 +1,21 @@
-'use client'
+'use client';
 
 import { useReducer } from 'react';
 import Image from 'next/image';
+import { Button } from '@nextui-org/react';
+import { FaRedo, FaUndo, FaArrowsAlt, FaSearchPlus, FaSearchMinus } from 'react-icons/fa';
 
-import { DesignerPreview, TemplateOption, Option, Total, DesignerFeatures } from '@/components';
+import { DesignerPreview, TemplateOption, Option, Total } from '@/components';
 
-import { PAPER_SIZES, PAPER_COLOR, PRINT_COLOR, QUANTITY, TEMPLATES, colors, images } from '@/constants';
+import {
+  PAPER_SIZES,
+  PAPER_COLOR,
+  PRINT_COLOR,
+  QUANTITY,
+  TEMPLATES,
+  colors,
+  images,
+} from '@/constants';
 
 const DEFAULT_LOGO = images.defaultLogo;
 
@@ -13,7 +23,7 @@ interface DesignerState {
   selectedTemplate: number;
   selectedPaperSize: { x: number; y: number };
   selectedPrintColor: number;
-  selectedPaperColor: string;
+  selectedPaperColor: { name: string; value: string };
   selectedQuantity: number;
   selectedLogo: string | null;
   logoScale: number;
@@ -24,7 +34,7 @@ type DesignerAction =
   | { type: 'SET_TEMPLATE'; payload: number }
   | { type: 'SET_PAPER_SIZE'; payload: { x: number; y: number } }
   | { type: 'SET_PRINT_COLOR'; payload: number }
-  | { type: 'SET_PAPER_COLOR'; payload: string }
+  | { type: 'SET_PAPER_COLOR'; payload: { name: string; value: string } }
   | { type: 'SET_QUANTITY'; payload: number }
   | { type: 'SET_LOGO'; payload: string | null }
   | { type: 'SHRINK_LOGO' }
@@ -67,7 +77,7 @@ export default function Designer() {
     selectedTemplate: 1,
     selectedPaperSize: PAPER_SIZES[0],
     selectedPrintColor: PRINT_COLOR[0],
-    selectedPaperColor: Object.values(colors)[0],
+    selectedPaperColor: PAPER_COLOR[0],
     selectedQuantity: QUANTITY[0],
     selectedLogo: null,
     logoScale: 1,
@@ -88,8 +98,11 @@ export default function Designer() {
     dispatch({ type: 'SET_PRINT_COLOR', payload: Number(event.target.value) });
   };
 
-  const handlePaperColorSelect = (color: string) => {
-    dispatch({ type: 'SET_PAPER_COLOR', payload: color });
+  const handlePaperColorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedColor = PAPER_COLOR.find((color) => color.value === event.target.value);
+    if (selectedColor) {
+      dispatch({ type: 'SET_PAPER_COLOR', payload: selectedColor });
+    }
   };
 
   const handleQuantitySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -117,61 +130,61 @@ export default function Designer() {
   console.log(state);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', height: '100vh', width: '100vw' }}>
+    <div className="flex flex-col lg:flex-row min-h-screen p-4 max-w-7xl mx-auto">
       {/* Left Column - Template Selection */}
-      <div style={{ width: '25%', overflowY: 'auto', padding: '1rem', borderRight: '1px solid #ccc' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', cursor: 'default' }}>Choose a Template</h2>
-        {TEMPLATES.map((template) => (
-          <TemplateOption
-            key={template.id}
-            {...template}
-            onSelect={handleTemplateSelect}
-            isSelected={state.selectedTemplate === template.id}
-          />
-        ))}
-      </div>
-      {/* Center Column - Designer */}
-      <div style={{ width: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem', borderRight: '1px solid #ccc' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Designer</h2>
-        <DesignerPreview 
-          selectedTemplate={state.selectedTemplate} 
-          selectedPaperSize={state.selectedPaperSize} 
-          selectedPaperColor={state.selectedPaperColor} 
-          selectedLogo={state.selectedLogo}
-          logoScale={state.logoScale}
-          logoRotation={state.logoRotation}
-        />
-        <DesignerFeatures
-          onShrink={handleShrink}
-          onEnlarge={handleEnlarge}
-          onRotateClockwise={handleRotateClockwise}
-          onRotateAntiClockwise={handleRotateAntiClockwise}
-          onDefault={handleDefault}
-        />
-      </div>
-      {/* Right Column - Paper Options */}
-      <div style={{ width: '25%', padding: '1rem' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Designer Options</h2>
-        {/* Logo Upload Section */}
-        <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', flex: 0.5, flexDirection: 'column', gap: '0.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Your Logo</h3>
-            {!state.selectedLogo ? <p>Please upload a logo to use on your cards.</p> : <p>You can upload a different logo if you like.</p>}
-            <input 
-              type="file" 
-              accept="image/*" 
-              onChange={handleLogoUpload} 
-              style={{ marginTop: '0.5rem' }}
-          />
-          </div>
-          <div style={{ display: 'flex', flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-            <Image 
-              src={state.selectedLogo || DEFAULT_LOGO} 
-              alt="Logo" 
-              width={100} 
-              height={100} 
-              style={{ objectFit: 'contain' }}
+      <div className="w-full lg:w-1/4 mb-4 lg:mb-0 lg:pr-4">
+        <h2 className="text-2xl font-bold mb-4">Choose a Template</h2>
+        <div className="space-y-4">
+          {TEMPLATES.map((template) => (
+            <TemplateOption
+              key={template.id}
+              {...template}
+              onSelect={handleTemplateSelect}
+              isSelected={state.selectedTemplate === template.id}
             />
+          ))}
+        </div>
+      </div>
+
+      {/* Center Column - Designer */}
+      <div className="w-full lg:w-1/2 mb-4 lg:mb-0 lg:px-4 flex flex-col items-center">
+        <h2 className="text-2xl font-bold mb-4 text-center">Designer</h2>
+        <div className="w-full flex justify-center">
+          <DesignerPreview
+            selectedTemplate={state.selectedTemplate}
+            selectedPaperSize={state.selectedPaperSize}
+            selectedPaperColor={state.selectedPaperColor.value}
+            selectedLogo={state.selectedLogo}
+            logoScale={state.logoScale}
+            logoRotation={state.logoRotation}
+          />
+        </div>
+        <div className="flex flex-wrap justify-center gap-4 mt-4">
+          <DesignerButton icon={FaUndo} label="Left" onClick={handleRotateAntiClockwise} />
+          <DesignerButton icon={FaSearchPlus} label="Enlarge" onClick={handleEnlarge} />
+          <DesignerButton icon={FaArrowsAlt} label="Default" onClick={handleDefault} />
+          <DesignerButton icon={FaSearchMinus} label="Shrink" onClick={handleShrink} />
+          <DesignerButton icon={FaRedo} label="Right" onClick={handleRotateClockwise} />
+        </div>
+      </div>
+
+      {/* Right Column - Paper Options */}
+      <div className="w-full lg:w-1/4 lg:pl-4">
+        <h2 className="text-2xl font-bold mb-4">Designer Options</h2>
+        {/* Logo Upload Section */}
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold mb-2">Your Logo</h3>
+          <div className="flex flex-col items-center">
+            <div className="w-full max-w-[150px] h-[150px] relative mb-4">
+              <Image
+                src={state.selectedLogo || DEFAULT_LOGO}
+                alt="Logo"
+                layout="fill"
+                objectFit="contain"
+              />
+            </div>
+            {!state.selectedLogo && <p className="text-center mb-2">Please upload a logo.</p>}
+            <input type="file" accept="image/*" onChange={handleLogoUpload} className="w-full" />
           </div>
         </div>
         <Option
@@ -190,28 +203,21 @@ export default function Designer() {
           getOptionLabel={(color) => color.toString()}
           getOptionValue={(color) => color.toString()}
         />
-        {/* Paper Color Section */}
-        <div style={{ marginBottom: '1rem' }}>  
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Paper Color</h3>
-          <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem', marginTop: '0.5rem' }}>
-            {Object.values(PAPER_COLOR).map((color) => (
-              <div 
-                key={color} 
-                style={{ 
-                  width: '3rem', 
-                  height: '3rem', 
-                  backgroundColor: color, 
-                  borderWidth: color === state.selectedPaperColor ? '1px' : '0px', 
-                  borderStyle: 'solid', 
-                  borderColor: color === state.selectedPaperColor ? 'gray' : '#ccc', 
-                  boxShadow: '0px 0px 5px 0px rgba(0, 0, 0, 0.1)',
-                  cursor: 'pointer'
-                }} 
-                onClick={() => handlePaperColorSelect(color)}
-              ></div>
-            ))}
-          </div>
-        </div>
+
+        <Option
+          title="Paper Color"
+          options={PAPER_COLOR}
+          value={state.selectedPaperColor}
+          onChange={handlePaperColorSelect}
+          renderStartContent={(color) => (
+            <div
+              className={`w-6 h-6 rounded-full mr-2 ${color.value === colors.white ? 'ring-[0.1px] ring-gray-300' : ''} shadow-md`}
+              style={{ backgroundColor: color.value }}
+            />
+          )}
+          getOptionLabel={(color) => color.name}
+          getOptionValue={(color) => color.value}
+        />
         <Option
           title="Quantity"
           options={QUANTITY}
@@ -220,8 +226,38 @@ export default function Designer() {
           getOptionLabel={(quantity) => `${quantity.toLocaleString()}`}
           getOptionValue={(quantity) => quantity.toString()}
         />
-        <Total paperSize={state.selectedPaperSize} printColor={state.selectedPrintColor} quantity={state.selectedQuantity} />
+        <Total
+          paperSize={state.selectedPaperSize}
+          printColor={state.selectedPrintColor}
+          quantity={state.selectedQuantity}
+        />
       </div>
+    </div>
+  );
+}
+
+// Helper component for designer buttons
+function DesignerButton({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: React.ElementType;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <div className="flex flex-col items-center">
+      <Button
+        color="default"
+        variant="light"
+        isIconOnly
+        className="w-12 h-12 rounded-full"
+        onClick={onClick}
+      >
+        <Icon className="text-xl" />
+      </Button>
+      <span className="text-xs mt-1">{label}</span>
     </div>
   );
 }
