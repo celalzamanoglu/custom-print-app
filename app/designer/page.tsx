@@ -119,110 +119,67 @@ export default function Designer() {
   console.log(state);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', height: '100vh', width: '100vw' }}>
+    <div className="flex flex-col lg:flex-row min-h-screen p-4 max-w-7xl mx-auto">
       {/* Left Column - Template Selection */}
-      <div style={{ width: '25%', overflowY: 'auto', padding: '1rem', borderRight: '1px solid #ccc' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', cursor: 'default' }}>Choose a Template</h2>
-        {TEMPLATES.map((template) => (
-          <TemplateOption
-            key={template.id}
-            {...template}
-            onSelect={handleTemplateSelect}
-            isSelected={state.selectedTemplate === template.id}
-          />
-        ))}
-      </div>
-      {/* Center Column - Designer */}
-      <div style={{ width: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem', borderRight: '1px solid #ccc' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Designer</h2>
-        <DesignerPreview 
-          selectedTemplate={state.selectedTemplate} 
-          selectedPaperSize={state.selectedPaperSize} 
-          selectedPaperColor={state.selectedPaperColor} 
-          selectedLogo={state.selectedLogo}
-          logoScale={state.logoScale}
-          logoRotation={state.logoRotation}
-        />
-        <div className="flex flex-wrap justify-center gap-8 mt-4">
-          <div className="flex flex-col items-center">
-            <Button
-              color="default"
-              variant="light"
-              className="w-16 h-16 flex items-center justify-center rounded-full"
-              onClick={handleRotateAntiClockwise}
-            >
-              <FaUndo className="text-2xl text-black" />
-            </Button>
-            <span className="text-xs text-black mt-2 text-center">Counter Clockwise</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <Button
-              color="default"
-              variant="light"
-              className="w-16 h-16 flex items-center justify-center rounded-full"
-              onClick={handleRotateClockwise}
-            >
-              <FaRedo className="text-2xl text-black" />
-            </Button>
-            <span className="text-xs text-black mt-2 text-center">Clockwise</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <Button
-              color="default"
-              variant="light"
-              className="w-16 h-16 flex items-center justify-center rounded-full"
-              onClick={handleEnlarge}
-            >
-              <FaSearchPlus className="text-2xl text-black" />
-            </Button>
-            <span className="text-xs text-black mt-2 text-center">Enlarge</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <Button
-              color="default"
-              variant="light"
-              className="w-16 h-16 flex items-center justify-center rounded-full"
-              onClick={handleShrink}
-            >
-              <FaSearchMinus className="text-2xl text-black" />
-            </Button>
-            <span className="text-xs text-black mt-2 text-center">Shrink</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <Button
-              color="default"
-              variant="light"
-              className="w-16 h-16 flex items-center justify-center rounded-full"
-              onClick={handleDefault}
-            >
-              <FaArrowsAlt className="text-2xl text-black" />
-            </Button>
-            <span className="text-xs text-black mt-2 text-center">Default</span>
-          </div>
+      <div className="w-full lg:w-1/4 mb-4 lg:mb-0 lg:pr-4">
+        <h2 className="text-2xl font-bold mb-4">Choose a Template</h2>
+        <div className="space-y-4">
+          {TEMPLATES.map((template) => (
+            <TemplateOption
+              key={template.id}
+              {...template}
+              onSelect={handleTemplateSelect}
+              isSelected={state.selectedTemplate === template.id}
+            />
+          ))}
         </div>
       </div>
+
+      {/* Center Column - Designer */}
+      <div className="w-full lg:w-1/2 mb-4 lg:mb-0 lg:px-4 flex flex-col items-center">
+        <h2 className="text-2xl font-bold mb-4 text-center">Designer</h2>
+        <div className="w-full flex justify-center">
+          <DesignerPreview 
+            selectedTemplate={state.selectedTemplate} 
+            selectedPaperSize={state.selectedPaperSize} 
+            selectedPaperColor={state.selectedPaperColor} 
+            selectedLogo={state.selectedLogo}
+            logoScale={state.logoScale}
+            logoRotation={state.logoRotation}
+          />
+        </div>
+        <div className="flex flex-wrap justify-center gap-4 mt-4">
+          <DesignerButton icon={FaUndo} label="Left" onClick={handleRotateAntiClockwise} />
+          <DesignerButton icon={FaSearchPlus} label="Enlarge" onClick={handleEnlarge} />
+          <DesignerButton icon={FaArrowsAlt} label="Default" onClick={handleDefault} />
+          <DesignerButton icon={FaSearchMinus} label="Shrink" onClick={handleShrink} />
+          <DesignerButton icon={FaRedo} label="Right" onClick={handleRotateClockwise} />
+        </div>
+      </div>
+
       {/* Right Column - Paper Options */}
-      <div style={{ width: '25%', padding: '1rem' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Designer Options</h2>
+      <div className="w-full lg:w-1/4 lg:pl-4">
+        <h2 className="text-2xl font-bold mb-4">Designer Options</h2>
         {/* Logo Upload Section */}
-        <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', flex: 0.5, flexDirection: 'column', gap: '0.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Your Logo</h3>
-            {!state.selectedLogo ? <p>Please upload a logo to use on your cards.</p> : <p>You can upload a different logo if you like.</p>}
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold mb-2">Your Logo</h3>
+          <div className="flex flex-col items-center">
+            <div className="w-full max-w-[150px] h-[150px] relative mb-4">
+              <Image 
+                src={state.selectedLogo || DEFAULT_LOGO} 
+                alt="Logo" 
+                layout="fill"
+                objectFit="contain"
+              />
+            </div>
+            {!state.selectedLogo && (
+              <p className="text-center mb-2">Please upload a logo.</p>
+            )}
             <input 
               type="file" 
               accept="image/*" 
               onChange={handleLogoUpload} 
-              style={{ marginTop: '0.5rem' }}
-            />
-          </div>
-          <div style={{ display: 'flex', flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-            <Image 
-              src={state.selectedLogo || DEFAULT_LOGO} 
-              alt="Logo" 
-              width={100} 
-              height={100} 
-              style={{ objectFit: 'contain' }}
+              className="w-full"
             />
           </div>
         </div>
@@ -243,22 +200,14 @@ export default function Designer() {
           getOptionValue={(color) => color.toString()}
         />
         {/* Paper Color Section */}
-        <div style={{ marginBottom: '1rem' }}>  
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 'semibold' }}>Paper Color</h3>
-          <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem', marginTop: '0.5rem' }}>
+        <div className="mb-4">  
+          <h3 className="text-lg font-semibold mb-2">Paper Color</h3>
+          <div className="flex flex-wrap gap-2">
             {Object.values(PAPER_COLOR).map((color) => (
               <div 
                 key={color} 
-                style={{ 
-                  width: '3rem', 
-                  height: '3rem', 
-                  backgroundColor: color, 
-                  borderWidth: color === state.selectedPaperColor ? '1px' : '0px', 
-                  borderStyle: 'solid', 
-                  borderColor: color === state.selectedPaperColor ? 'gray' : '#ccc', 
-                  boxShadow: '0px 0px 5px 0px rgba(0, 0, 0, 0.1)',
-                  cursor: 'pointer'
-                }} 
+                className={`w-10 h-10 rounded-full cursor-pointer ${color === state.selectedPaperColor ? 'ring-2 ring-black' : ''}`}
+                style={{ backgroundColor: color }}
                 onClick={() => handlePaperColorSelect(color)}
               ></div>
             ))}
@@ -274,6 +223,24 @@ export default function Designer() {
         />
         <Total paperSize={state.selectedPaperSize} printColor={state.selectedPrintColor} quantity={state.selectedQuantity} />
       </div>
+    </div>
+  );
+}
+
+// Helper component for designer buttons
+function DesignerButton({ icon: Icon, label, onClick }: { icon: React.ElementType, label: string, onClick: () => void }) {
+  return (
+    <div className="flex flex-col items-center">
+      <Button
+        color="default"
+        variant="light"
+        isIconOnly
+        className="w-12 h-12 rounded-full"
+        onClick={onClick}
+      >
+        <Icon className="text-xl" />
+      </Button>
+      <span className="text-xs mt-1">{label}</span>
     </div>
   );
 }

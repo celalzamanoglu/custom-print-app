@@ -29,7 +29,7 @@ export default function Home() {
           <Button
             as={Link}
             href="/designer"
-            color="primary"
+            className="bg-[#1c1c1e] text-white hover:bg-[#2c2c2e] transition-colors"
             size="lg"
           >
             DESIGN YOUR PAPER
@@ -43,7 +43,7 @@ export default function Home() {
           {steps.map((step) => (
             <Card key={step.id} className="p-6 w-80 hover:shadow-lg transition-shadow duration-300">
               <div className="flex flex-col items-center">
-                <div className="text-5xl mb-4 text-primary">
+                <div className="text-5xl mb-4 text-[#1c1c1e]">
                   <step.icon />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">STEP {step.id}</h3>
