@@ -2,8 +2,10 @@
 
 import { useReducer } from 'react';
 import Image from 'next/image';
+import { Button } from '@nextui-org/react';
+import { FaRedo, FaUndo, FaArrowsAlt, FaSearchPlus, FaSearchMinus } from 'react-icons/fa';
 
-import { DesignerPreview, TemplateOption, Option, Total, DesignerFeatures } from '@/components';
+import { DesignerPreview, TemplateOption, Option, Total } from '@/components';
 
 import { PAPER_SIZES, PAPER_COLOR, PRINT_COLOR, QUANTITY, TEMPLATES, colors, images } from '@/constants';
 
@@ -141,13 +143,63 @@ export default function Designer() {
           logoScale={state.logoScale}
           logoRotation={state.logoRotation}
         />
-        <DesignerFeatures
-          onShrink={handleShrink}
-          onEnlarge={handleEnlarge}
-          onRotateClockwise={handleRotateClockwise}
-          onRotateAntiClockwise={handleRotateAntiClockwise}
-          onDefault={handleDefault}
-        />
+        <div className="flex flex-wrap justify-center gap-8 mt-4">
+          <div className="flex flex-col items-center">
+            <Button
+              color="default"
+              variant="light"
+              className="w-16 h-16 flex items-center justify-center rounded-full"
+              onClick={handleRotateAntiClockwise}
+            >
+              <FaUndo className="text-2xl text-black" />
+            </Button>
+            <span className="text-xs text-black mt-2 text-center">Counter Clockwise</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Button
+              color="default"
+              variant="light"
+              className="w-16 h-16 flex items-center justify-center rounded-full"
+              onClick={handleRotateClockwise}
+            >
+              <FaRedo className="text-2xl text-black" />
+            </Button>
+            <span className="text-xs text-black mt-2 text-center">Clockwise</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Button
+              color="default"
+              variant="light"
+              className="w-16 h-16 flex items-center justify-center rounded-full"
+              onClick={handleEnlarge}
+            >
+              <FaSearchPlus className="text-2xl text-black" />
+            </Button>
+            <span className="text-xs text-black mt-2 text-center">Enlarge</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Button
+              color="default"
+              variant="light"
+              className="w-16 h-16 flex items-center justify-center rounded-full"
+              onClick={handleShrink}
+            >
+              <FaSearchMinus className="text-2xl text-black" />
+            </Button>
+            <span className="text-xs text-black mt-2 text-center">Shrink</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Button
+              color="default"
+              variant="light"
+              className="w-16 h-16 flex items-center justify-center rounded-full"
+              onClick={handleDefault}
+            >
+              <FaArrowsAlt className="text-2xl text-black" />
+            </Button>
+            <span className="text-xs text-black mt-2 text-center">Default</span>
+          </div>
+        </div>
       </div>
       {/* Right Column - Paper Options */}
       <div style={{ width: '25%', padding: '1rem' }}>
@@ -162,7 +214,7 @@ export default function Designer() {
               accept="image/*" 
               onChange={handleLogoUpload} 
               style={{ marginTop: '0.5rem' }}
-          />
+            />
           </div>
           <div style={{ display: 'flex', flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
             <Image 
