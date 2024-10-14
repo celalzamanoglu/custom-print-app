@@ -89,24 +89,20 @@ export default function Designer() {
     dispatch({ type: 'SET_DEFAULT_LOGO_FEATURES' });
   };
 
-  const handlePaperSizeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const [x, y] = event.target.value.split('x').map(Number);
-    dispatch({ type: 'SET_PAPER_SIZE', payload: { x, y } });
+  const handlePaperSizeSelect = (selectedSize: { x: number; y: number }) => {
+    dispatch({ type: 'SET_PAPER_SIZE', payload: selectedSize });
   };
 
-  const handlePrintColorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_PRINT_COLOR', payload: Number(event.target.value) });
+  const handlePrintColorSelect = (selectedColor: number) => {
+    dispatch({ type: 'SET_PRINT_COLOR', payload: selectedColor });
   };
 
-  const handlePaperColorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedColor = PAPER_COLOR.find((color) => color.value === event.target.value);
-    if (selectedColor) {
-      dispatch({ type: 'SET_PAPER_COLOR', payload: selectedColor });
-    }
+  const handlePaperColorSelect = (selectedColor: { name: string; value: string }) => {
+    dispatch({ type: 'SET_PAPER_COLOR', payload: selectedColor });
   };
 
-  const handleQuantitySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_QUANTITY', payload: Number(event.target.value) });
+  const handleQuantitySelect = (selectedQuantity: number) => {
+    dispatch({ type: 'SET_QUANTITY', payload: selectedQuantity });
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
