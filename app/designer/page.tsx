@@ -1,23 +1,19 @@
 'use client';
-
 import { useReducer } from 'react';
+
 import Image from 'next/image';
-import { Button } from '@nextui-org/react';
 import { FaRedo, FaUndo, FaArrowsAlt, FaSearchPlus, FaSearchMinus } from 'react-icons/fa';
 
-import { DesignerPreview, TemplateOption, Option, Total } from '@/components';
-
 import {
-  PAPER_SIZES,
-  PAPER_COLOR,
-  PRINT_COLOR,
-  QUANTITY,
-  TEMPLATES,
-  colors,
-  images,
-} from '@/constants';
+  DesignerPreview,
+  TemplateOption,
+  Option,
+  Total,
+  DesignerButton,
+  ColorSwatch,
+} from '@/components';
 
-const DEFAULT_LOGO = images.defaultLogo;
+import { PAPER_SIZES, PAPER_COLOR, PRINT_COLOR, QUANTITY, TEMPLATES, images } from '@/constants';
 
 interface DesignerState {
   selectedTemplate: number;
@@ -173,7 +169,7 @@ export default function Designer() {
           <div className="flex flex-col items-center">
             <div className="w-full max-w-[150px] h-[150px] relative mb-4">
               <Image
-                src={state.selectedLogo || DEFAULT_LOGO}
+                src={state.selectedLogo || images.defaultLogo}
                 alt="Logo"
                 layout="fill"
                 objectFit="contain"
@@ -199,18 +195,12 @@ export default function Designer() {
           getOptionLabel={(color) => color.toString()}
           getOptionValue={(color) => color.toString()}
         />
-
         <Option
           title="Paper Color"
           options={PAPER_COLOR}
           value={state.selectedPaperColor}
           onChange={handlePaperColorSelect}
-          renderStartContent={(color) => (
-            <div
-              className={`w-6 h-6 rounded-full mr-2 ${color.value === colors.white ? 'ring-[0.1px] ring-gray-300' : ''} shadow-md`}
-              style={{ backgroundColor: color.value }}
-            />
-          )}
+          renderStartContent={(color) => <ColorSwatch color={color.value} />}
           getOptionLabel={(color) => color.name}
           getOptionValue={(color) => color.value}
         />
@@ -228,32 +218,6 @@ export default function Designer() {
           quantity={state.selectedQuantity}
         />
       </div>
-    </div>
-  );
-}
-
-// Helper component for designer buttons
-function DesignerButton({
-  icon: Icon,
-  label,
-  onClick,
-}: {
-  icon: React.ElementType;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <div className="flex flex-col items-center">
-      <Button
-        color="default"
-        variant="light"
-        isIconOnly
-        className="w-12 h-12 rounded-full"
-        onClick={onClick}
-      >
-        <Icon className="text-xl" />
-      </Button>
-      <span className="text-xs mt-1">{label}</span>
     </div>
   );
 }
