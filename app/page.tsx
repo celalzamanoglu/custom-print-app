@@ -5,8 +5,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { Button, Card, Spinner } from '@nextui-org/react';
+import { Button, Spinner } from '@nextui-org/react';
 
+import { StepCard } from '@/components';
 import { images, STEPS } from '@/constants';
 
 export default function Home() {
@@ -56,16 +57,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-center mb-12">Design Your Paper in 3 Easy Steps</h2>
         <div className="flex flex-wrap justify-center gap-8">
           {STEPS.map((step) => (
-            <Card key={step.id} className="p-6 w-80 hover:shadow-lg transition-shadow duration-300">
-              <div className="flex flex-col items-center">
-                <div className="text-5xl mb-4 text-[#1c1c1e]">
-                  <step.icon />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">STEP {step.id}</h3>
-                <h4 className="text-lg font-medium mb-2 text-center">{step.title}</h4>
-                <p className="text-center">{step.description}</p>
-              </div>
-            </Card>
+            <StepCard key={step.id} {...step} />
           ))}
         </div>
       </div>

@@ -6,3 +6,4 @@ export * from './designerFeatures';
 export * from './designerButton';
 export * from './colorSwatch';
 export * from './navbar';
+export * from './stepCard';
