@@ -9,6 +9,8 @@ interface OptionProps<T> {
   getOptionLabel: (option: T) => string;
   getOptionValue: (option: T) => string;
   renderStartContent?: (option: T) => React.ReactNode;
+  renderValue?: (option: T) => React.ReactNode;
+  classNames?: Record<string, string>;
 }
 
 export function Option<T>({
@@ -19,6 +21,8 @@ export function Option<T>({
   getOptionLabel,
   getOptionValue,
   renderStartContent,
+  renderValue,
+  classNames,
 }: OptionProps<T>) {
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = options.find((option) => getOptionValue(option) === e.target.value);
@@ -35,6 +39,8 @@ export function Option<T>({
         selectedKeys={[getOptionValue(value)]}
         onChange={handleSelectionChange}
         className="max-w-xs"
+        renderValue={renderValue ? () => renderValue(value) : undefined}
+        classNames={classNames}
       >
         {options.map((option) => (
           <SelectItem

@@ -203,6 +203,17 @@ export default function Designer() {
           renderStartContent={(color) => <ColorSwatch color={color.value} />}
           getOptionLabel={(color) => color.name}
           getOptionValue={(color) => color.value}
+          classNames={{
+            // to prevent the colorswatch to overlap with the title text
+            trigger: ' h-16', // Adds padding to the top of the trigger (selected value area)
+            value: ' mt-2', // Adds padding to the top of the value text
+          }}
+          renderValue={(color) => (
+            <div className="flex items-center my-2">
+              <ColorSwatch color={color.value} />
+              <span className="ml-2">{color.name}</span>
+            </div>
+          )}
         />
         <Option
           title="Quantity"
