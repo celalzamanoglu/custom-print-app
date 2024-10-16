@@ -1,34 +1,31 @@
 'use client';
 
-import { Button, Card } from '@nextui-org/react';
+import { useState, useEffect } from 'react';
+
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaUpload, FaPaintBrush, FaClipboardList } from 'react-icons/fa';
 
-import { images } from '@/constants';
+import { Button, Card, Spinner } from '@nextui-org/react';
 
-const steps = [
-  {
-    id: 1,
-    title: 'UPLOAD YOUR LOGO',
-    description: 'Upload vector image file – .pdf, .png, .jpg, or .eps vector graphic.',
-    icon: FaUpload,
-  },
-  {
-    id: 2,
-    title: 'DESIGN YOUR PAPER',
-    description: 'Adjust your logo or image in the design tool on the paper and design it.',
-    icon: FaPaintBrush,
-  },
-  {
-    id: 3,
-    title: 'SELECT PAPER CHOICES',
-    description: 'Select paper size, print color(s), white or Kraft paper, and sheet quantity.',
-    icon: FaClipboardList,
-  },
-];
+import { images, STEPS } from '@/constants';
 
 export default function Home() {
+  const [pageLoaded, setPageLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.src = images.crumpledPaperboard;
+    img.onload = () => setPageLoaded(true);
+  }, []);
+
+  if (!pageLoaded) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gray-100">
+        <Spinner size="lg" color="default" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="relative h-[500px]">
@@ -58,7 +55,7 @@ export default function Home() {
       <div className="container mx-auto py-16">
         <h2 className="text-3xl font-bold text-center mb-12">Design Your Paper in 3 Easy Steps</h2>
         <div className="flex flex-wrap justify-center gap-8">
-          {steps.map((step) => (
+          {STEPS.map((step) => (
             <Card key={step.id} className="p-6 w-80 hover:shadow-lg transition-shadow duration-300">
               <div className="flex flex-col items-center">
                 <div className="text-5xl mb-4 text-[#1c1c1e]">
