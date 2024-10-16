@@ -171,8 +171,8 @@ export default function Designer() {
               <Image
                 src={state.selectedLogo || images.defaultLogo}
                 alt="Logo"
-                layout="fill"
-                objectFit="contain"
+                fill
+                className="object-contain"
               />
             </div>
             {!state.selectedLogo && <p className="text-center mb-2">Please upload a logo.</p>}

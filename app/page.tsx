@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FaUpload, FaPaintBrush, FaClipboardList } from 'react-icons/fa';
 
+import { images } from '@/constants';
+
 const steps = [
   {
     id: 1,
@@ -31,10 +33,10 @@ export default function Home() {
     <div>
       <div className="relative h-[500px]">
         <Image
-          src="/crumpled-paperboard.jpg"
+          src={images.crumpledPaperboard}
           alt="Kraft paper with custom prints"
           fill
-          objectFit="cover"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-white">
           <h1 className="text-4xl font-bold mb-4">Add Your Logo</h1>
