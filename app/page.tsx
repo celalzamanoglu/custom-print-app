@@ -37,19 +37,21 @@ export default function Home() {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-white">
-          <h1 className="text-4xl font-bold mb-4">Add Your Logo</h1>
-          <p className="text-xl mb-8 max-w-2xl text-center">
-            Create your own personalized greaseproof logo printed paper with our easy-to-use design
-            tool.
-          </p>
-          <Button
-            as={Link}
-            href="/designer"
-            className="bg-[#1c1c1e] text-white hover:bg-[#2c2c2e] transition-colors"
-            size="lg"
-          >
-            DESIGN YOUR PAPER
-          </Button>
+          <div className="animate-slide-up">
+            <h1 className="text-4xl font-bold mb-4">Add Your Logo</h1>
+            <p className="text-xl mb-8 max-w-2xl">
+              Create your own personalized greaseproof logo printed paper with our easy-to-use
+              design tool.
+            </p>
+            <Button
+              as={Link}
+              href="/designer"
+              className="bg-[#1c1c1e] text-white hover:bg-[#2c2c2e] transition-colors"
+              size="lg"
+            >
+              DESIGN YOUR PAPER
+            </Button>
+          </div>
         </div>
       </div>
 
