@@ -58,8 +58,10 @@ export default function Home() {
       <div className="container mx-auto py-16">
         <h2 className="text-3xl font-bold text-center mb-12">Design Your Paper in 3 Easy Steps</h2>
         <div className="flex flex-wrap justify-center gap-8">
-          {STEPS.map((step) => (
-            <StepCard key={step.id} {...step} />
+          {STEPS.map((step, index) => (
+            <div key={step.id} className={`animate-slide-right animation-delay-${index}`}>
+              <StepCard {...step} />
+            </div>
           ))}
         </div>
       </div>
