@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-
 import {
   Navbar as NextUINavbar,
   NavbarBrand,
@@ -11,8 +10,11 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Link,
+  Button,
 } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
+
+import { FaUser, FaShoppingCart } from 'react-icons/fa';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,7 +62,7 @@ export const Navbar = () => {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <Link href="/" color="foreground" className="font-bold text-2xl">
+          <Link href="/" color="foreground" className="font-bold text-xl">
             Custom Print Paper
           </Link>
         </NavbarBrand>
@@ -72,6 +74,23 @@ export const Navbar = () => {
             {renderNavLink(item)}
           </NavbarItem>
         ))}
+      </NavbarContent>
+
+      <NavbarContent justify="end">
+        <NavbarItem>
+          <Link href="/login">
+            <Button isIconOnly variant="light" aria-label="Account">
+              <FaUser size={20} />
+            </Button>
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link href="/cart">
+            <Button isIconOnly variant="light" aria-label="Cart">
+              <FaShoppingCart size={20} />
+            </Button>
+          </Link>
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarMenu>
