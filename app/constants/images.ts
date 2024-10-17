@@ -1,3 +1,4 @@
 export const images = {
-    defaultLogo: '/default-logo.webp'
+    defaultLogo: '/default-logo.webp',
+    crumpledPaperboard: '/crumpled-paperboard.jpg',
 }

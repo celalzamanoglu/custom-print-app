@@ -1,23 +1,19 @@
 'use client';
-
 import { useReducer } from 'react';
+
 import Image from 'next/image';
-import { Button } from '@nextui-org/react';
 import { FaRedo, FaUndo, FaArrowsAlt, FaSearchPlus, FaSearchMinus } from 'react-icons/fa';
 
-import { DesignerPreview, TemplateOption, Option, Total } from '@/components';
-
 import {
-  PAPER_SIZES,
-  PAPER_COLOR,
-  PRINT_COLOR,
-  QUANTITY,
-  TEMPLATES,
-  colors,
-  images,
-} from '@/constants';
+  DesignerPreview,
+  TemplateOption,
+  Option,
+  Total,
+  DesignerButton,
+  ColorSwatch,
+} from '@/components';
 
-const DEFAULT_LOGO = images.defaultLogo;
+import { PAPER_SIZES, PAPER_COLOR, PRINT_COLOR, QUANTITY, TEMPLATES, images } from '@/constants';
 
 interface DesignerState {
   selectedTemplate: number;
@@ -89,24 +85,20 @@ export default function Designer() {
     dispatch({ type: 'SET_DEFAULT_LOGO_FEATURES' });
   };
 
-  const handlePaperSizeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const [x, y] = event.target.value.split('x').map(Number);
-    dispatch({ type: 'SET_PAPER_SIZE', payload: { x, y } });
+  const handlePaperSizeSelect = (selectedSize: { x: number; y: number }) => {
+    dispatch({ type: 'SET_PAPER_SIZE', payload: selectedSize });
   };
 
-  const handlePrintColorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_PRINT_COLOR', payload: Number(event.target.value) });
+  const handlePrintColorSelect = (selectedColor: number) => {
+    dispatch({ type: 'SET_PRINT_COLOR', payload: selectedColor });
   };
 
-  const handlePaperColorSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedColor = PAPER_COLOR.find((color) => color.value === event.target.value);
-    if (selectedColor) {
-      dispatch({ type: 'SET_PAPER_COLOR', payload: selectedColor });
-    }
+  const handlePaperColorSelect = (selectedColor: { name: string; value: string }) => {
+    dispatch({ type: 'SET_PAPER_COLOR', payload: selectedColor });
   };
 
-  const handleQuantitySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'SET_QUANTITY', payload: Number(event.target.value) });
+  const handleQuantitySelect = (selectedQuantity: number) => {
+    dispatch({ type: 'SET_QUANTITY', payload: selectedQuantity });
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,10 +169,10 @@ export default function Designer() {
           <div className="flex flex-col items-center">
             <div className="w-full max-w-[150px] h-[150px] relative mb-4">
               <Image
-                src={state.selectedLogo || DEFAULT_LOGO}
+                src={state.selectedLogo || images.defaultLogo}
                 alt="Logo"
-                layout="fill"
-                objectFit="contain"
+                fill
+                className="object-contain"
               />
             </div>
             {!state.selectedLogo && <p className="text-center mb-2">Please upload a logo.</p>}
@@ -203,20 +195,25 @@ export default function Designer() {
           getOptionLabel={(color) => color.toString()}
           getOptionValue={(color) => color.toString()}
         />
-
         <Option
           title="Paper Color"
           options={PAPER_COLOR}
           value={state.selectedPaperColor}
           onChange={handlePaperColorSelect}
-          renderStartContent={(color) => (
-            <div
-              className={`w-6 h-6 rounded-full mr-2 ${color.value === colors.white ? 'ring-[0.1px] ring-gray-300' : ''} shadow-md`}
-              style={{ backgroundColor: color.value }}
-            />
-          )}
+          renderStartContent={(color) => <ColorSwatch color={color.value} />}
           getOptionLabel={(color) => color.name}
           getOptionValue={(color) => color.value}
+          classNames={{
+            // to prevent the colorswatch to overlap with the title text
+            trigger: ' h-16', // Adds padding to the top of the trigger (selected value area)
+            value: ' mt-2', // Adds padding to the top of the value text
+          }}
+          renderValue={(color) => (
+            <div className="flex items-center my-2">
+              <ColorSwatch color={color.value} />
+              <span className="ml-2">{color.name}</span>
+            </div>
+          )}
         />
         <Option
           title="Quantity"
@@ -232,32 +229,6 @@ export default function Designer() {
           quantity={state.selectedQuantity}
         />
       </div>
-    </div>
-  );
-}
-
-// Helper component for designer buttons
-function DesignerButton({
-  icon: Icon,
-  label,
-  onClick,
-}: {
-  icon: React.ElementType;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <div className="flex flex-col items-center">
-      <Button
-        color="default"
-        variant="light"
-        isIconOnly
-        className="w-12 h-12 rounded-full"
-        onClick={onClick}
-      >
-        <Icon className="text-xl" />
-      </Button>
-      <span className="text-xs mt-1">{label}</span>
     </div>
   );
 }

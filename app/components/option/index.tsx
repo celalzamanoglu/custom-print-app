@@ -5,10 +5,12 @@ interface OptionProps<T> {
   title: string;
   options: T[];
   value: T;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (value: T) => void;
   getOptionLabel: (option: T) => string;
   getOptionValue: (option: T) => string;
   renderStartContent?: (option: T) => React.ReactNode;
+  renderValue?: (option: T) => React.ReactNode;
+  classNames?: Record<string, string>;
 }
 
 export function Option<T>({
@@ -19,15 +21,26 @@ export function Option<T>({
   getOptionLabel,
   getOptionValue,
   renderStartContent,
+  renderValue,
+  classNames,
 }: OptionProps<T>) {
+  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOption = options.find((option) => getOptionValue(option) === e.target.value);
+    if (selectedOption) {
+      onChange(selectedOption);
+    }
+  };
+
   return (
     <div className="mb-4">
       <Select
         label={title}
         placeholder={`Select ${title}`}
         selectedKeys={[getOptionValue(value)]}
-        onChange={onChange}
+        onChange={handleSelectionChange}
         className="max-w-xs"
+        renderValue={renderValue ? () => renderValue(value) : undefined}
+        classNames={classNames}
       >
         {options.map((option) => (
           <SelectItem
