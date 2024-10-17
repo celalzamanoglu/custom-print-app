@@ -3,15 +3,18 @@
 import { useState } from 'react';
 import { Input, Button, Card } from '@nextui-org/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt with:', { email, password });
+    // For now, we'll just navigate to the account page
+    // In a real application, you would validate the credentials here
+    router.push('/account');
   };
 
   return (
