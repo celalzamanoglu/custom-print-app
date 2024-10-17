@@ -140,7 +140,7 @@ export default function Account() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-4xl font-bold mb-4">Welcome John Doe</h1>
       <p className="text-xl mb-8">
         Manage your orders, access saved designs, update payment methods, and adjust your account
@@ -165,18 +165,20 @@ export default function Account() {
 
       <div className="mt-12">
         <h2 className="text-2xl font-bold mb-4">Saved Designs</h2>
-        <div className="flex overflow-x-auto space-x-4 pb-4">
-          {savedDesigns.map((design) => (
-            <Card key={design.id} className="min-w-[200px] max-w-[250px]">
-              <Image src={design.image} alt={design.name} className="w-full h-40 object-cover" />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2">{design.name}</h3>
-                <p className="text-sm">Size: {design.paperSize}</p>
-                <p className="text-sm">Print Color: {design.printColor}</p>
-                <p className="text-sm">Paper Color: {design.paperColor}</p>
-              </div>
-            </Card>
-          ))}
+        <div className="overflow-x-auto overflow-y-visible">
+          <div className="flex space-x-4 pb-4 px-4 pt-4">
+            {savedDesigns.map((design) => (
+              <Card key={design.id} className="flex-shrink-0 w-[200px] shadow-lg">
+                <Image src={design.image} alt={design.name} className="w-full h-40 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2">{design.name}</h3>
+                  <p className="text-sm">Size: {design.paperSize}</p>
+                  <p className="text-sm">Print Color: {design.printColor}</p>
+                  <p className="text-sm">Paper Color: {design.paperColor}</p>
+                </div>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>
